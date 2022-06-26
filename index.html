@@ -16,11 +16,18 @@
             width: 100vh;
             height: 100vh;
         }
-        th {
-            font-size: xx-large;
-        }
         tr {
-            font-size: xx-large;
+            text-align: center;
+            vertical-align: middle;
+        }
+        th {
+            text-align: center;
+            vertical-align: middle;
+        }
+        td {
+            font-size: 42pt;
+            text-align: center;
+            vertical-align: middle;
         }
     </style>
         <div class="container pt-4" id="content">
@@ -50,19 +57,19 @@
             <table class="table" id="clock" hidden>
                 <tbody>
                     <tr>
-                        <th scope="row" style="color: green;">STB For Rest</th>
-                        <td id="stb4rest" style="color: green;"></td>
+                        <th scope="row" style="color: rgb(51, 204, 51); font-size: 20pt;">STB FOR REST</th>
+                        <td id="stb4rest" style="color: rgb(51, 204, 51);"></td>
                     </tr>
                     <tr>
-                        <th scope="row" style="color: blue;">Rest</th>
+                        <th scope="row" style="color: blue;  font-size: 30pt">REST</th>
                         <td id="rest" style="color: blue;"></td>
                     </tr>
                     <tr>
-                        <th scope="row" style="color: #074757;">STB For Work</th>
-                        <td id="stb4work" style="color: #074757;"></td>
+                        <th scope="row" style="color: rgb(255, 153, 0);  font-size: 20pt">STB FOR WORK</th>
+                        <td id="stb4work" style="color: rgb(255, 153, 0);"></td>
                     </tr>
                     <tr>
-                        <th scope="row" style="color: red;">Work</th>
+                        <th scope="row" style="color: red;  font-size: 30pt">WORK</th>
                         <td id="work" style="color: red;"></td>
                     </tr>
                 </tbody>
@@ -85,7 +92,7 @@
         }
 
         function showTime(value) {
-            return `${(value / 60).toFixed(3)}`;
+            return `${(value / 60).toFixed(2)}`;
         }
 
         function showclock() {
@@ -108,7 +115,7 @@
             const period = khoangcach[3];
             const offset = (period + (getSecondsInDay() - getSecondsFromTime(hour, minute)) % period) % period;
 
-            [stb4rest, rest, stb4work, work].forEach(v => v.innerText = "---");
+            [stb4rest, rest, stb4work, work].forEach(v => v.innerText = "----");
 
             if (offset < khoangcach[0])         stb4rest.innerText = showTime(khoangcach[0] - offset);
             else if (offset < khoangcach[1])    rest.innerText = showTime(khoangcach[1] - offset);
