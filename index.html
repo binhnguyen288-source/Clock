@@ -115,7 +115,7 @@
             const period = khoangcach[3];
             const offset = (period + (getSecondsInDay() - getSecondsFromTime(hour, minute)) % period) % period;
 
-            [stb4rest, rest, stb4work, work].forEach(v => v.innerText = "----");
+            [stb4rest, rest, stb4work, work].forEach(v => v.innerText = "---");
 
             if (offset < khoangcach[0])         stb4rest.innerText = showTime(khoangcach[0] - offset);
             else if (offset < khoangcach[1])    rest.innerText = showTime(khoangcach[1] - offset);
