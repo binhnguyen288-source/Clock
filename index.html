@@ -9,29 +9,36 @@
   </head>
   <body>
     <style>
+        body {
+            font-family: Calibri;
+        }
         #content {
             display: flex;
             align-items: center;
-            justify-items: center;
-            width: 100vh;
+            justify-content: center;
+            margin: auto;
+            width: 100vw;
             height: 100vh;
         }
         tr {
             text-align: center;
             vertical-align: middle;
+            font-weight: bold;
         }
         th {
             text-align: center;
             vertical-align: middle;
+            font-weight: bold;
         }
         td {
-            font-size: 42pt;
+            font-size: 49pt;
             text-align: center;
             vertical-align: middle;
+            font-weight: bold;
         }
     </style>
-        <div class="container pt-4" id="content">
-            <div id="inputform" class="vstack">
+        <div id="content">
+            <div id="inputform" style="width: 30rem;">
                 <div class="mb-2">
                     <label for="giobd" class="form-label">Giờ bắt đầu</label>
                     <input type="text" class="form-control" id="giobd">
@@ -48,28 +55,28 @@
                     <label for="kc3" class="form-label">Khoảng cách 3</label>
                     <input type="text" class="form-control" id="kc3">
                 </div>
-                <div class="mb-4">
+                <div class="mb-3">
                     <label for="kc4" class="form-label">Khoảng cách 4</label>
                     <input type="text" class="form-control" id="kc4">
                 </div>
-                <button class="btn btn-primary" onclick="showclock()">Xong</button>
+                <button class="btn btn-primary" style="width:100%" onclick="showclock()">Xong</button>
             </div>
-            <table class="table" id="clock" hidden>
+            <table class="table table-bordered" id="clock" style="width: 30rem;"hidden>
                 <tbody>
                     <tr>
-                        <th scope="row" style="color: rgb(51, 204, 51); font-size: 20pt;">STB FOR REST</th>
+                        <th scope="row" style="color: rgb(51, 204, 51); font-size: 14pt;">STB FOR REST</th>
                         <td id="stb4rest" style="color: rgb(51, 204, 51);"></td>
                     </tr>
                     <tr>
-                        <th scope="row" style="color: blue;  font-size: 30pt">REST</th>
+                        <th scope="row" style="color: blue;  font-size: 35pt">REST</th>
                         <td id="rest" style="color: blue;"></td>
                     </tr>
                     <tr>
-                        <th scope="row" style="color: rgb(255, 153, 0);  font-size: 20pt">STB FOR WORK</th>
+                        <th scope="row" style="color: rgb(255, 153, 0);  font-size: 14pt">STB FOR WORK</th>
                         <td id="stb4work" style="color: rgb(255, 153, 0);"></td>
                     </tr>
                     <tr>
-                        <th scope="row" style="color: red;  font-size: 30pt">WORK</th>
+                        <th scope="row" style="color: red;  font-size: 35pt">WORK</th>
                         <td id="work" style="color: red;"></td>
                     </tr>
                 </tbody>
