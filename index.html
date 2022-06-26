@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thời gian biểu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <style>
+        #content {
+            display: flex;
+            align-items: center;
+            justify-items: center;
+            width: 100vh;
+            height: 100vh;
+        }
+        th {
+            font-size: xx-large;
+        }
+        tr {
+            font-size: xx-large;
+        }
+    </style>
+        <div class="container pt-4" id="content">
+            <div id="inputform" class="vstack">
+                <div class="mb-2">
+                    <label for="giobd" class="form-label">Giờ bắt đầu</label>
+                    <input type="text" class="form-control" id="giobd">
+                </div>
+                <div class="mb-2">
+                    <label for="kc1" class="form-label">Khoảng cách 1</label>
+                    <input type="text" class="form-control" id="kc1">
+                </div>
+                <div class="mb-2">
+                    <label for="kc2" class="form-label">Khoảng cách 2</label>
+                    <input type="text" class="form-control" id="kc2">
+                </div>
+                <div class="mb-2">
+                    <label for="kc3" class="form-label">Khoảng cách 3</label>
+                    <input type="text" class="form-control" id="kc3">
+                </div>
+                <div class="mb-4">
+                    <label for="kc4" class="form-label">Khoảng cách 4</label>
+                    <input type="text" class="form-control" id="kc4">
+                </div>
+                <button class="btn btn-primary" onclick="showclock()">Xong</button>
+            </div>
+            <table class="table" id="clock" hidden>
+                <tbody>
+                    <tr>
+                        <th scope="row" style="color: green;">STB For Rest</th>
+                        <td id="stb4rest" style="color: green;"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" style="color: blue;">Rest</th>
+                        <td id="rest" style="color: blue;"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" style="color: #074757;">STB For Work</th>
+                        <td id="stb4work" style="color: #074757;"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" style="color: red;">Work</th>
+                        <td id="work" style="color: red;"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    <script>
+        const stb4rest = document.getElementById("stb4rest");
+        const rest = document.getElementById("rest");
+        const stb4work = document.getElementById("stb4work");
+        const work = document.getElementById("work");
+
+        let [hour, minute] = [0, 0];
+        let khoangcach = [0, 0, 0, 0];
+        function getSecondsInDay() {
+            const date = new Date(Date.now());
+            return date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
+        }
+        function getSecondsFromTime(hour, minutes) {
+            return hour * 3600 + minutes * 60;
+        }
+
+        function showTime(value) {
+            return `${(value / 60).toFixed(3)}`;
+        }
+
+        function showclock() {
+            
+            document.getElementById("inputform").setAttribute('hidden', '');
+
+            [hour, minute] = document.getElementById("giobd").value.split(":").map(v => parseInt(v));
+            console.log(hour, minute);
+            
+            setInterval(updateClock, 1000);
+            [1, 2, 3, 4].forEach((v, idx) => {
+                khoangcach[idx] = (idx ? khoangcach[idx - 1] : 0) + 60 * parseInt(document.getElementById(`kc${v}`).value);
+            });
+            console.log(khoangcach);
+            updateClock();
+            document.getElementById("clock").removeAttribute('hidden');
+        }
+
+        function updateClock() {
+            const period = khoangcach[3];
+            const offset = (period + (getSecondsInDay() - getSecondsFromTime(hour, minute)) % period) % period;
+
+            [stb4rest, rest, stb4work, work].forEach(v => v.innerText = "---");
+
+            if (offset < khoangcach[0])         stb4rest.innerText = showTime(khoangcach[0] - offset);
+            else if (offset < khoangcach[1])    rest.innerText = showTime(khoangcach[1] - offset);
+            else if (offset < khoangcach[2])    stb4work.innerText = showTime(khoangcach[2] - offset);
+            else                                work.innerText = showTime(khoangcach[3] - offset);
+        }
+
+    </script>
+  </body>
+</html>
