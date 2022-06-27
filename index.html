@@ -46,7 +46,7 @@
         }
     </style>
         <div id="content">
-            <div id="inputform" style="width: 22rem;">
+            <div id="inputform" style="width: 24rem;">
                 <div class="mb-2">
                     <label for="giobd" class="form-label">Giờ bắt đầu</label>
                     <input type="text" class="form-control" id="giobd">
@@ -67,75 +67,103 @@
                     <label for="kc4" class="form-label">Khoảng cách 4</label>
                     <input type="text" class="form-control" id="kc4">
                 </div>
-                <button class="btn btn-primary" style="width:100%" onclick="showclock()">Xong</button>
+                <button class="btn btn-primary" style="width:100%" onclick="setClock()">Xong</button>
             </div>
-            <table class="table" id="clock" style="width: 22rem; height: 18rem;" hidden>
+            <table class="table" id="clock" style="width: 24rem; height: 18rem;" hidden>
                 <tbody>
                     <tr>
-                        <th scope="row" style="color: rgb(51, 204, 51); font-size: 14pt;">STB FOR REST</th>
-                        <td id="stb4rest" style="color: rgb(51, 204, 51);"></td>
+                        <td style="color: blue;  font-size: 35pt">B-REST</th>
+                        <td style="color: rgb(51, 204, 51); font-size: 14pt;">A-REST</th>
                     </tr>
                     <tr>
-                        <th scope="row" style="color: blue;  font-size: 35pt">REST</th>
-                        <td id="rest" style="color: blue;"></td>
+                        <td id="BREST" style="color: blue;"></td>
+                        <td id="AREST" style="color: rgb(51, 204, 51);"></td>
                     </tr>
                     <tr>
-                        <th scope="row" style="color: rgb(255, 153, 0);  font-size: 14pt">STB FOR WORK</th>
-                        <td id="stb4work" style="color: rgb(255, 153, 0);"></td>
+                        <td style="color: red;  font-size: 35pt">B-WORK</th>
+                        <td style="color: rgb(255, 153, 0);  font-size: 14pt">A-WORK</th>
                     </tr>
                     <tr>
-                        <th scope="row" style="color: red;  font-size: 35pt">WORK</th>
-                        <td id="work" style="color: red;"></td>
+                        <td id="BWORK" style="color: red;"></td>
+                        <td id="AWORK" style="color: rgb(255, 153, 0);"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     <script>
-        const stb4rest = document.getElementById("stb4rest");
-        const rest = document.getElementById("rest");
-        const stb4work = document.getElementById("stb4work");
-        const work = document.getElementById("work");
+        const BREST = document.getElementById("BREST");
+        const AREST = document.getElementById("AREST");
+        const BWORK = document.getElementById("BWORK");
+        const AWORK = document.getElementById("AWORK");
 
-        let [hour, minute] = [0, 0];
+        let it = null;
+        let base = 0;
         let khoangcach = [0, 0, 0, 0];
+
+
+        // if (localStorage.getItem("settings")) {
+        //     const settings = JSON.parse(localStorage.getItem("settings"));
+        //     base = settings.base;
+        //     khoangcach = [...settings.khoangcach];
+        //     showClock();
+        // }
+        
         function getSecondsInDay() {
             const date = new Date(Date.now());
             return date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
         }
-        function getSecondsFromTime(hour, minutes) {
-            return hour * 3600 + minutes * 60;
+
+        function resetClock() {
+            if (it) clearInterval(it);
+            it = null;
+            const minute = (base / 60) % 60;
+            const hour = Math.floor(base / 3600);
+            [1, 2, 3, 4].forEach((v, idx) => document.getElementById(`kc${v}`).value = (idx ? khoangcach[idx] - khoangcach[idx - 1] : khoangcach[idx]) / 60);
+            document.getElementById("giobd").value = [hour, minute].join(":");
+
+            localStorage.clear();
+            document.getElementById("clock").setAttribute('hidden', '');
+            document.getElementById("inputform").removeAttribute('hidden');
         }
 
-        function showTime(value) {
-            return `${(value / 60).toFixed(2)}`;
-        }
-
-        function showclock() {
+        function setClock() {
             
-            document.getElementById("inputform").setAttribute('hidden', '');
-
-            [hour, minute] = document.getElementById("giobd").value.split(":").map(v => parseInt(v));
-            console.log(hour, minute);
-            
-            setInterval(updateClock, 1000);
+            const [hour, minute] = document.getElementById("giobd").value.split(":").map(v => parseInt(v));
+            base = hour * 3600 + minute * 60;
             [1, 2, 3, 4].forEach((v, idx) => {
                 khoangcach[idx] = (idx ? khoangcach[idx - 1] : 0) + 60 * parseInt(document.getElementById(`kc${v}`).value);
             });
-            console.log(khoangcach);
+            
+            localStorage.setItem("settings", JSON.stringify({ base, khoangcach }));
+            showClock();
+        }
+
+
+        function showClock() {
+            if (it) clearInterval(it);
+            it = setInterval(updateClock, 1000);
             updateClock();
+            document.getElementById("inputform").setAttribute('hidden', '');
             document.getElementById("clock").removeAttribute('hidden');
         }
 
         function updateClock() {
             const period = khoangcach[3];
-            const offset = (period + (getSecondsInDay() - getSecondsFromTime(hour, minute)) % period) % period;
+            const normalize = v => (period + v % period) % period;
+            const offset = normalize(getSecondsInDay() - base);
+            [BREST, AREST, BWORK, AWORK].forEach(v => v.innerText = "---");
+            const minuteStr = value => `${(value / 60).toFixed(2)}`;
 
-            [stb4rest, rest, stb4work, work].forEach(v => v.innerText = "---");
-
-            if (offset < khoangcach[0])         stb4rest.innerText = showTime(khoangcach[0] - offset);
-            else if (offset < khoangcach[1])    rest.innerText = showTime(khoangcach[1] - offset);
-            else if (offset < khoangcach[2])    stb4work.innerText = showTime(khoangcach[2] - offset);
-            else                                work.innerText = showTime(khoangcach[3] - offset);
+            const time = khoangcach.map(v => normalize(v - offset));
+            if (time[0] < time[2])
+                AREST.innerText = minuteStr(time[0]);
+            else
+                AWORK.innerText = minuteStr(time[2]);
+            
+            if (time[1] < time[3])
+                BREST.innerText = minuteStr(time[1]);
+            else
+                BWORK.innerText = minuteStr(time[3]);
         }
 
     </script>
