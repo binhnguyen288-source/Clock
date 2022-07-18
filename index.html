@@ -122,9 +122,9 @@
 
         function setClock() {
             
-            const [hour, minute] = document.getElementById("giobd").value.split(":").map(v => parseInt(v));
+            const [hour, minute] = document.getElementById("giobd").value.split(":").map(v => parseFloat(v));
             base = hour * 3600 + minute * 60;
-            [1, 2, 3, 4].forEach((v, idx) => khoangcach[idx] = 60 * parseInt(document.getElementById(`kc${v}`).value));
+            [1, 2, 3, 4].forEach((v, idx) => khoangcach[idx] = Math.max(0.0001, 60 * parseFloat(document.getElementById(`kc${v}`).value)));
             // [1, 2, 3, 4].forEach((v, idx) => {
             //     khoangcach[idx] = (idx ? khoangcach[idx - 1] : 0) + 60 * parseInt(document.getElementById(`kc${v}`).value);
             // });
@@ -144,10 +144,11 @@
 
         function updateClock() {
             const period = khoangcach[0] + khoangcach[1] + khoangcach[2] + khoangcach[3];
-            const normalize = v => (period + v % period) % period;
+            
+            const normalize = v => v - period * Math.floor(v / period);
             const offset = normalize(getSecondsInDay() - base);
             [BREST, AREST, BWORK, AWORK].forEach(v => v.innerText = "---");
-            const minuteStr = value => `${(value / 60).toFixed(2)}`;
+            //const minuteStr = value => `${(value / 60).toFixed(2)}`;
             const roundPercent = value => {
                 const str = (100 * value).toFixed(2);
                 return str.length < 5 ? '0' + str : str;
@@ -157,16 +158,20 @@
                 normalize(-offset + khoangcach[0] + khoangcach[1] + khoangcach[2]),
                 normalize(-offset + khoangcach[0] + khoangcach[1] + khoangcach[2] + khoangcach[3]),
                 normalize(-offset + khoangcach[0])
-            ]; // 7 = 3 + 4
+            ];
             if (times[0] < times[2])
                 AREST.innerText = roundPercent(1 - times[0] / (khoangcach[0] + khoangcach[1]));
-            else
+            else if (times[0] > times[2])
                 AWORK.innerText = roundPercent(1 - times[2] / (khoangcach[2] + khoangcach[3]));
-            
             if (times[1] < times[3])
-                BREST.innerText = roundPercent(1 - times[1] / (khoangcach[0] + khoangcach[3]));
-            else
-                BWORK.innerText = roundPercent(1 - times[3] / (khoangcach[1] + khoangcach[2])); // 2 + 3
+                BREST.innerText = roundPercent(1 - times[1] / (khoangcach[1] + khoangcach[2]));
+            else if (times[1] > times[3])
+                BWORK.innerText = roundPercent(1 - times[3] / (khoangcach[0] + khoangcach[3]));
+            // AREST.innerText = times[0] / 60;
+            // AWORK.innerText = times[2] / 60;
+            // BREST.innerText = times[1] / 60;
+            // BWORK.innerText = times[3] / 60; // 0.6 = 0.2 + 0.4 0.8 + 0.1 -> 
+            // 0.3 
         }
 
     </script>
