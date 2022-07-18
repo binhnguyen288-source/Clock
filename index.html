@@ -148,7 +148,10 @@
             const offset = normalize(getSecondsInDay() - base);
             [BREST, AREST, BWORK, AWORK].forEach(v => v.innerText = "---");
             const minuteStr = value => `${(value / 60).toFixed(2)}`;
-            const roundPercent = value => (100 * value).toFixed(2);
+            const roundPercent = value => {
+                const str = (100 * value).toFixed(2);
+                return str.length < 5 ? '0' + str : str;
+            }
             const times = [
                 normalize(-offset + khoangcach[0] + khoangcach[1]),
                 normalize(-offset + khoangcach[0] + khoangcach[1] + khoangcach[2]),
