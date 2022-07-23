@@ -19,161 +19,78 @@
             margin: auto;
             width: 100vw;
             height: 100vh;
-        }
-        tr {
-            text-align: center;
-            vertical-align: middle;
-            font-weight: bold;
-            line-height: 100%;
-        }
-        td {
-            font-size: 49pt;
-            text-align: center;
-            vertical-align: middle;
-            font-weight: bold;
+            background-color: black;
+            color: white;
         }
     </style>
         <div id="content">
-            <div id="inputform" style="width: 24rem;">
+            <div id="inputform">
                 <div class="mb-2">
-                    <label for="giobd" class="form-label">Giờ bắt đầu</label>
-                    <input type="text" class="form-control" id="giobd">
+                    <label for="data" class="form-label">Nhập trường dữ liệu</label>
+                    <input type="text" class="form-control" id="data">
                 </div>
-                <div class="mb-2">
-                    <label for="kc1" class="form-label">Khoảng cách 1</label>
-                    <input type="text" class="form-control" id="kc1">
-                </div>
-                <div class="mb-2">
-                    <label for="kc2" class="form-label">Khoảng cách 2</label>
-                    <input type="text" class="form-control" id="kc2">
-                </div>
-                <div class="mb-2">
-                    <label for="kc3" class="form-label">Khoảng cách 3</label>
-                    <input type="text" class="form-control" id="kc3">
-                </div>
-                <div class="mb-3">
-                    <label for="kc4" class="form-label">Khoảng cách 4</label>
-                    <input type="text" class="form-control" id="kc4">
-                </div>
-                <button class="btn btn-primary" style="width:100%" onclick="setClock()">Xong</button>
+                <button class="btn btn-secondary" style="width:100%" onclick="setClock()">Xong</button>
             </div>
-            <div id="clock" hidden>
-                <table class="table" style="width: 28rem; height: 9rem; margin-bottom: 5rem;">
-                    <tbody>
-                        <tr>
-                            <td style="color: blue;  font-size: 35pt">B-REST</td>
-                            <td style="color: rgb(51, 204, 51); font-size: 35pt;">A-REST</td>
-                        </tr>
-                        <tr>
-                            <td id="BREST" style="color: blue;"></td>
-                            <td id="AREST" style="color: rgb(51, 204, 51);"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table" style="width: 28rem; height: 9rem;">
-                    <tbody>
-                        <tr>
-                            <td style="color: red;  font-size: 35pt">B-WORK</td>
-                            <td style="color: rgb(255, 153, 0);  font-size: 35pt">A-WORK</td>
-                        </tr>
-                        <tr>
-                            <td id="BWORK" style="color: red;"></td>
-                            <td id="AWORK" style="color: rgb(255, 153, 0);"></td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div id="clock" hidden style="display: grid; place-items: center;">
+                <div id="thungay" style="font-size: 24pt; color: rgb(166, 166, 166);"></div>
+                <div id="counter" style="font-size: 72pt;"></div>
+                <div id="curTime" style="font-size: 24pt; color: rgb(166, 166, 166);"></div>
             </div>
         </div>
     <script>
-        const BREST = document.getElementById("BREST");
-        const AREST = document.getElementById("AREST");
-        const BWORK = document.getElementById("BWORK");
-        const AWORK = document.getElementById("AWORK");
+        const thungay = document.getElementById("thungay");
+        const counter = document.getElementById("counter");
+        const curTime = document.getElementById("curTime");
 
-        let it = null;
         let base = 0;
-        let khoangcach = [0, 0, 0, 0];
+        let period = 0;
 
+        const dayMap = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
-        // if (localStorage.getItem("settings")) {
-        //     const settings = JSON.parse(localStorage.getItem("settings"));
-        //     base = settings.base;
-        //     khoangcach = [...settings.khoangcach];
-        //     showClock();
-        // }
-        
         function getSecondsInDay() {
             const date = new Date(Date.now());
-            return date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
-        }
-
-        function resetClock() {
-            if (it) clearInterval(it);
-            it = null;
-            const minute = (base / 60) % 60;
-            const hour = Math.floor(base / 3600);
-            [1, 2, 3, 4].forEach((v, idx) => document.getElementById(`kc${v}`).value = (idx ? khoangcach[idx] - khoangcach[idx - 1] : khoangcach[idx]) / 60);
-            document.getElementById("giobd").value = [hour, minute].join(":");
-
-            localStorage.clear();
-            document.getElementById("clock").setAttribute('hidden', '');
-            document.getElementById("inputform").removeAttribute('hidden');
+            return {
+                thuNgay: `${dayMap[date.getDay()]}-${date.getDate() < 10 ? '0' + date.getDate() : date.getDate()}`,
+                curHour: date.getHours(),
+                curMinute: date.getMinutes(),
+                seconds: date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds()
+            }
         }
 
         function setClock() {
-            
-            const [hour, minute] = document.getElementById("giobd").value.split(":").map(v => parseFloat(v));
-            base = hour * 3600 + minute * 60;
-            [1, 2, 3, 4].forEach((v, idx) => khoangcach[idx] = Math.max(0.0001, 60 * parseFloat(document.getElementById(`kc${v}`).value)));
-            // [1, 2, 3, 4].forEach((v, idx) => {
-            //     khoangcach[idx] = (idx ? khoangcach[idx - 1] : 0) + 60 * parseInt(document.getElementById(`kc${v}`).value);
-            // });
-            
-            // localStorage.setItem("settings", JSON.stringify({ base, khoangcach }));
+            const data = document.getElementById("data").value;
+            base = parseInt(data.substr(0, 2)) * 3600 + parseInt(data.substr(2, 2)) * 60;
+            period = parseFloat(data.substr(4)) * 60;
+            console.log(period, base)
             showClock();
         }
 
 
         function showClock() {
-            if (it) clearInterval(it);
-            it = setInterval(updateClock, 1000);
+            setInterval(updateClock, 1000);
             updateClock();
             document.getElementById("inputform").setAttribute('hidden', '');
             document.getElementById("clock").removeAttribute('hidden');
         }
 
         function updateClock() {
-            const period = khoangcach[0] + khoangcach[1] + khoangcach[2] + khoangcach[3];
-            
-            const normalize = v => v - period * Math.floor(v / period);
-            const offset = normalize(getSecondsInDay() - base);
-            [BREST, AREST, BWORK, AWORK].forEach(v => v.innerText = "---");
-            //const minuteStr = value => `${(value / 60).toFixed(2)}`;
-            const roundPercent = value => {
-                let str = (100 * value).toFixed(2);
-                if (str.length < 5) str = '0' + str;
-                return str.substr(str.length - 5, 5);
+            const normalize = v => {
+                const frac = v / period;
+                return frac - Math.floor(frac);
             }
-            
-            const times = [
-                normalize(-offset + khoangcach[0] + khoangcach[1]),
-                normalize(-offset + khoangcach[0] + khoangcach[1] + khoangcach[2]),
-                normalize(-offset + khoangcach[0] + khoangcach[1] + khoangcach[2] + khoangcach[3]),
-                normalize(-offset + khoangcach[0])
-            ];
-            if (times[0] < times[2])
-                AREST.innerText = roundPercent(1 - times[0] / (khoangcach[0] + khoangcach[1]));
-            else if (times[0] > times[2])
-                AWORK.innerText = roundPercent(1 - times[2] / (khoangcach[2] + khoangcach[3]));
-            if (times[1] < times[3])
-                BREST.innerText = roundPercent(1 - times[1] / (khoangcach[1] + khoangcach[2]));
-            else if (times[1] > times[3])
-                BWORK.innerText = roundPercent(1 - times[3] / (khoangcach[0] + khoangcach[3]));
-            // AREST.innerText = times[0] / 60;
-            // AWORK.innerText = times[2] / 60;
-            // BREST.innerText = times[1] / 60;
-            // BWORK.innerText = times[3] / 60; // 0.6 = 0.2 + 0.4 0.8 + 0.1 -> 
-            // 0.3 
+
+            const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay();
+
+            const offset = normalize(seconds - base);
+
+            const roundPercent = value => {
+                let str = (100 * value).toFixed(0);
+                if (str.length < 2) str = '0' + str;
+                return str.substr(str.length - 2, 2);
+            }
+            thungay.innerText = thuNgay;
+            counter.innerText = roundPercent(offset);
+            curTime.innerText = `${curHour < 10 ? '0' + curHour : curHour}:${curMinute < 10 ? '0' + curMinute : curMinute}`;
         }
 
     </script>
