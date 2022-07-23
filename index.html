@@ -88,7 +88,7 @@
                 return str.substr(str.length - 2, 2);
             }
             thungay.innerText = thuNgay;
-            counter.innerText = roundPercent(offset);
+            counter.innerText = `${Math.floor((seconds - base) / period)}:${roundPercent(offset)}`;
             curTime.innerText = `${curHour < 10 ? '0' + curHour : curHour}:${curMinute < 10 ? '0' + curMinute : curMinute}`;
         }
 
