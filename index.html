@@ -73,22 +73,11 @@
         }
 
         function updateClock() {
-            const normalize = v => {
-                const frac = v / period;
-                return frac - Math.floor(frac);
-            }
-
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay();
 
-            const offset = normalize(seconds - base);
-
-            const roundPercent = value => {
-                let str = (100 * value).toFixed(0);
-                if (str.length < 2) str = '0' + str;
-                return str.substr(str.length - 2, 2);
-            }
+            const offset = 1 + (seconds - base) / period;
             thungay.innerText = thuNgay;
-            counter.innerText = `${Math.floor((seconds - base) / period)}:${roundPercent(offset)}`;
+            counter.innerText = offset.toFixed(2);
             curTime.innerText = `${curHour < 10 ? '0' + curHour : curHour}:${curMinute < 10 ? '0' + curMinute : curMinute}`;
         }
 
