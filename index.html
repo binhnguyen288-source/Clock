@@ -75,7 +75,7 @@
         function updateClock() {
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay();
             const cur = (seconds - base) / period;
-            const offset = Math.floor(100 * (cur - Math.floor(cur)));
+            const offset = Math.floor(100 * (cur - Math.floor(cur))).toString();
             thungay.innerText = thuNgay;
             counter.innerText = offset.length < 2 ? '0' + offset : offset;
             
