@@ -77,7 +77,7 @@
             const cur = (seconds - base) / period;
             const offset = Math.floor(100 * (cur - Math.floor(cur))).toString();
             thungay.innerText = thuNgay;
-            counter.innerText =  prefix[Math.floor(cur) % 3] + offset.length < 2 ? '0' + offset : offset;
+            counter.innerText =  prefix[Math.floor(cur) % 3] + (offset.length < 2 ? '0' + offset : offset);
             
             curTime.innerText = `${curHour < 10 ? '0' + curHour : curHour}:${curMinute < 10 ? '0' + curMinute : curMinute}`;
         }
