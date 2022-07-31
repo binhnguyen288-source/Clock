@@ -75,9 +75,10 @@
         function updateClock() {
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay();
             const cur = (seconds - base) / period;
-            const offset = Math.floor(100 * (cur - Math.floor(cur))).toString();
+            const fl = Math.floor(cur);
+            const offset = Math.floor(100 * (cur - fl)).toString();
             thungay.innerText = thuNgay;
-            counter.innerText =  prefix[Math.floor(cur) % 3] + (offset.length < 2 ? '0' + offset : offset);
+            counter.innerText =  prefix[(3 + fl % 3) % 3] + (offset.length < 2 ? '0' + offset : offset);
             
             curTime.innerText = `${curHour < 10 ? '0' + curHour : curHour}:${curMinute < 10 ? '0' + curMinute : curMinute}`;
         }
