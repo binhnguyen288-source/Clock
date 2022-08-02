@@ -71,7 +71,7 @@
             document.getElementById("inputform").setAttribute('hidden', '');
             document.getElementById("clock").removeAttribute('hidden');
         }
-        let prevOffset = 1000;
+        let prevOffset = -1;
 
         const sound = new Audio("beep.mp3");
         function updateClock() {
