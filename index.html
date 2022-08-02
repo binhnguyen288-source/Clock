@@ -71,12 +71,20 @@
             document.getElementById("inputform").setAttribute('hidden', '');
             document.getElementById("clock").removeAttribute('hidden');
         }
+        let prevOffset = 1000;
 
+        const sound = new Audio("beep.mp3");
         function updateClock() {
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay();
             const cur = (seconds - base) / period;
             const fl = Math.floor(cur);
-            const offset = Math.floor(100 * (cur - fl)).toString();
+            let offset = Math.floor(100 * (cur - fl));
+            if (offset < prevOffset) {
+                sound.play();
+            }
+            prevOffset = offset;
+            offset = offset.toString();
+            
             thungay.innerText = thuNgay;
             counter.innerText =  prefix[(3 + fl % 3) % 3] + (offset.length < 2 ? '0' + offset : offset);
             
