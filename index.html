@@ -19,8 +19,6 @@
             margin: auto;
             width: 100vw;
             height: 100vh;
-            background-color: black;
-            color: white;
         }
     </style>
         <div id="content">
@@ -32,9 +30,9 @@
                 <button class="btn btn-secondary" style="width:100%" onclick="setClock()">Xong</button>
             </div>
             <div id="clock" hidden style="display: grid; place-items: center;">
-                <div id="thungay" style="font-size: 40pt;"></div>
+                <div id="thungay" style="font-size: 40pt; font-weight: bold;"></div>
                 <div id="counter" style="font-size: 90pt; font-weight: bold;"></div>
-                <div id="curTime" style="font-size: 45pt;"></div>
+                <div id="curTime" style="font-size: 45pt; font-weight: bold;"></div>
             </div>
         </div>
     <script>
@@ -83,6 +81,9 @@
                 sound.play();
             }
             prevOffset = offset;
+            if (offset < 50) counter.style.color = "rgb(0, 159, 0)";
+            else counter.style.color = "rgb(159, 0, 0)";
+
             offset = offset.toString();
             
             thungay.innerText = thuNgay;
