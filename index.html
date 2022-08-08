@@ -98,6 +98,8 @@
         // Create the root video element
         var video = document.createElement('video');
         video.setAttribute('loop', '');
+        video.setAttribute('playsinline', '');
+        video.setAttribute('autoplay');
         // Add some styles if needed
         video.setAttribute('style', 'position: fixed;');
 
@@ -123,11 +125,11 @@
 
         // Start playing video after any user interaction.
         // NOTE: Running video.play() handler without a user action may be blocked by browser.
-        var playFn = function() {
-            video.play();
-            document.body.removeEventListener('touchend', playFn);
-        };
-        document.body.addEventListener('touchend', playFn);
+        // var playFn = function() {
+        //     video.play();
+        //     document.body.removeEventListener('touchend', playFn);
+        // };
+        // document.body.addEventListener('touchend', playFn);
 
     </script>
   </body>
