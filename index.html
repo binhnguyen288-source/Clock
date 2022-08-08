@@ -29,7 +29,8 @@
                     <label for="data" class="form-label">Nhập trường dữ liệu</label>
                     <input type="text" class="form-control" id="data">
                 </div>
-                <button class="btn btn-secondary" style="width:100%" onclick="setClock()">Xong</button>
+                <button class="btn btn-secondary mb-2" style="width:100%" onclick="setClock()">Xong</button>
+                <button class="btn btn-secondary" style="width:100%" onClick="wakeLock(this)">Bật WakeLock</button>
             </div>
             <div id="clock" hidden style="display: grid; place-items: center;">
                 <div id="thungay" style="font-size: 40pt; font-weight: bold;"></div>
@@ -39,11 +40,13 @@
         </div>
     <script src="./NoSleep.min.js"></script>
     <script>
+
+
         var noSleep = new NoSleep();
-        document.addEventListener('click', function enableNoSleep() {
-            document.removeEventListener('click', enableNoSleep, false);
+        function wakeLock(ev) {
             noSleep.enable();
-        }, false);
+            ev.setAttribute('hidden', '');
+        }
         const thungay = document.getElementById("thungay");
         const counter = document.getElementById("counter");
         const curTime = document.getElementById("curTime");
