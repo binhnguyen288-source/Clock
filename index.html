@@ -34,7 +34,7 @@
             </div>
             <div id="clock" hidden style="display: grid; place-items: center;">
                 <div id="thungay" style="font-size: 40pt; font-weight: bold;"></div>
-                <div id="counter" style="font-size: 100pt; font-weight: bold;"></div>
+                <div id="counter" style="font-size: 90pt; font-weight: bold;"></div>
                 <div id="curTime" style="font-size: 45pt; font-weight: bold;"></div>
             </div>
         </div>
@@ -85,7 +85,7 @@
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay();
             const cur = (seconds - base) / period;
             const fl = Math.floor(cur);
-            let offset = Math.floor(100 * (cur - fl));
+            let offset = Math.floor(1000 * (cur - fl));
             if (offset < prevOffset) {
                 sound.play();
             }
@@ -94,9 +94,10 @@
             else counter.style.color = "rgb(159, 0, 0)";
 
             offset = offset.toString();
+            while (offset.length < 3) offset = '0' + offset;
             
             thungay.innerText = thuNgay;
-            counter.innerText =  prefix[(3 + fl % 3) % 3] + (offset.length < 2 ? '0' + offset : offset);
+            counter.innerText =  prefix[(3 + fl % 3) % 3] + offset;
             
             curTime.innerText = `${curHour < 10 ? '0' + curHour : curHour}:${curMinute < 10 ? '0' + curMinute : curMinute}`;
         }
