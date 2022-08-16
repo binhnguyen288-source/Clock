@@ -52,7 +52,7 @@
         let [base, period] = [0, 0]
         const dayMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
 
-        const prefix = ["F", "M", "L"];
+        // const prefix = ["F", "M", "L"];
 
         function getSecondsInDay() {
             const date = new Date(Date.now());
@@ -83,22 +83,18 @@
         const sound = new Audio("beep.mp3");
         function updateClock() {
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay();
-            const cur = (seconds - base) / period;
+            const cur = (seconds - base) / 3600;
             const fl = Math.floor(cur);
-            let offset = Math.floor(1000 * (cur - fl));
-            if (offset < prevOffset) {
-                sound.play();
-            }
+            let offset = Math.floor(60 * (cur - fl));
+            if (offset < prevOffset) sound.play();
             prevOffset = offset;
-            if (offset < 50) counter.style.color = "rgb(0, 159, 0)";
+            if (offset < 45) counter. style.color = "rgb(0, 159, 0)";
             else counter.style.color = "rgb(159, 0, 0)";
 
-            offset = offset.toString();
-            while (offset.length < 3) offset = '0' + offset;
+            offset = offset.toString().padStart(2, '0');
             
             thungay.innerText = thuNgay;
-            counter.innerText =  prefix[(3 + fl % 3) % 3] + offset;
-            
+            counter.innerText = offset;
             curTime.innerText = `${curHour < 10 ? '0' + curHour : curHour}:${curMinute < 10 ? '0' + curMinute : curMinute}`;
         }
 
