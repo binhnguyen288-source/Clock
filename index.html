@@ -57,9 +57,9 @@
         function getSecondsInDay() {
             const date = new Date(Date.now());
             return {
-                thuNgay: `${dayMap[date.getDay()]}-${date.getDate() < 10 ? '0' + date.getDate() : date.getDate()}`,
-                curHour: date.getHours(),
-                curMinute: date.getMinutes(),
+                thuNgay: `${dayMap[date.getDay()]}-${date.getDate().toString().padStart(2, '0')}`,
+                curHour: date.getHours().toString().padStart(2, '0'),
+                curMinute: date.getMinutes().toString().padStart(2, '0'),
                 seconds: date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds()
             }
         }
@@ -84,18 +84,13 @@
         function updateClock() {
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay();
             const cur = (seconds - base) / 3600;
-            const fl = Math.floor(cur);
-            let offset = Math.floor(60 * (cur - fl));
+            let offset = Math.floor(60 * (cur - Math.floor(cur)));
             if (offset < prevOffset) sound.play();
             prevOffset = offset;
-            if (offset < 45) counter. style.color = "rgb(0, 159, 0)";
-            else counter.style.color = "rgb(159, 0, 0)";
-
-            offset = offset.toString().padStart(2, '0');
-            
+            counter.style.color = (offset < 45) ? "rgb(0, 159, 0)" : "rgb(159, 0, 0)";
             thungay.innerText = thuNgay;
-            counter.innerText = offset;
-            curTime.innerText = `${curHour < 10 ? '0' + curHour : curHour}:${curMinute < 10 ? '0' + curMinute : curMinute}`;
+            counter.innerText = offset.toString().padStart(2, '0');
+            curTime.innerText = `${curHour.toString().padStart(2, '0')}:${curMinute.pad}`;
         }
 
     </script>
