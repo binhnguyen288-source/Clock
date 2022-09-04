@@ -33,9 +33,8 @@
                 <button class="btn btn-secondary" style="width:100%" onClick="wakeLock(this)">Bật WakeLock</button>
             </div>
             <div id="clock" hidden style="display: grid; place-items: center;">
-                <span id="thungay" style="font-size: 50pt; font-weight: bold;"></span>
-                <span id="counter" style="font-size: 125pt; font-weight: bold; line-height: 90pt;"></span>
-                <span id="curTime" style="font-size: 56pt; font-weight: bold;"></span>
+                <span id="thungay" style="font-size: 56pt; font-weight: bold;"></span>
+                <span id="curTime" style="font-size: 80pt; font-weight: bold;"></span>
             </div>
         </div>
     <script src="NoSleep.min.js"></script>
@@ -46,13 +45,12 @@
             ev.setAttribute('hidden', '');
         }
         const thungay = document.getElementById("thungay");
-        const counter = document.getElementById("counter");
         const curTime = document.getElementById("curTime");
 
         let [base, period] = [0, 0]
         const dayMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
 
-        // const prefix = ["F", "M", "L"];
+        const kc = [0, 0, 0, 0];
 
         function getSecondsInDay() {
             const date = new Date(Date.now());
@@ -67,7 +65,10 @@
         function setClock() {
             const data = document.getElementById("data").value;
             base = parseInt(data.substr(0, 2)) * 3600 + parseInt(data.substr(2, 2)) * 60;
-            period = parseFloat(data.substr(4)) * 60;
+            for (let i = 0; i < 4; ++i)
+                kc[i] = parseInt(data.substr(4 + 2 * i, 2));
+            for (let i = 1; i < 4; ++i)
+                kc[i] += kc[i - 1];
             showClock();
         }
 
@@ -81,16 +82,20 @@
         let prevOffset = -1;
 
         const sound = new Audio("beep.mp3");
+        const content = document.getElementById("content");
         function updateClock() {
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay();
-            const cur = (seconds - base) / 3600;
-            let offset = Math.floor(60 * (cur - Math.floor(cur)));
+            const cur = Math.floor((seconds - base) / 60);
+            let offset = (kc[3] + cur % kc[3]) % kc[3];
             if (offset < prevOffset) sound.play();
             prevOffset = offset;
-            counter.style.color = (offset < 45) ? "rgb(0, 159, 0)" : "rgb(159, 0, 0)";
             thungay.innerText = thuNgay;
-            counter.innerText = offset.toString().padStart(2, '0');
             curTime.innerText = `${curHour}:${curMinute}`;
+            content.style.backgroundColor = 
+                offset < kc[0] ? "rgb(255,0,0)" :
+                offset < kc[1] ? "rgb(255,192,0)" :
+                offset < kc[2] ? "rgb(0,112,192)" :
+                                 "rgb(112,48,160)";
         }
 
     </script>
