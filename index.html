@@ -33,8 +33,9 @@
                 <button class="btn btn-secondary" style="width:100%" onClick="wakeLock(this)">Bật WakeLock</button>
             </div>
             <div id="clock" hidden style="display: grid; place-items: center;">
-                <span id="thungay" style="font-size: 56pt; font-weight: bold;"></span>
-                <span id="curTime" style="font-size: 80pt; font-weight: bold;"></span>
+                <span id="thungay" style="font-size: 40pt; font-weight: bold;"></span>
+                <span id="curTime" style="font-size: 80pt; font-weight: bold; line-height: 55pt;"></span>
+                <span id="bias" style="font-size: 60pt; font-weight: bold;"></span>
             </div>
         </div>
     <script src="NoSleep.min.js"></script>
@@ -46,8 +47,9 @@
         }
         const thungay = document.getElementById("thungay");
         const curTime = document.getElementById("curTime");
+        const biasElement = document.getElementById("bias");
 
-        let [base, period] = [0, 0]
+        let [base, period, bias] = [0, 0, 0]
         const dayMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
 
         const kc = [0, 0, 0, 0];
@@ -66,9 +68,12 @@
             const data = document.getElementById("data").value;
             base = parseInt(data.substr(0, 2)) * 3600 + parseInt(data.substr(2, 2)) * 60;
             for (let i = 0; i < 4; ++i)
-                kc[i] = parseInt(data.substr(4 + 2 * i, 2));
+                kc[i] = parseFloat(data.substr(4 + 3 * i, 3));
             for (let i = 1; i < 4; ++i)
                 kc[i] += kc[i - 1];
+
+            bias = parseFloat(data.substr(16));
+            
             showClock();
         }
 
@@ -83,6 +88,10 @@
 
         const sound = new Audio("beep.mp3");
         const content = document.getElementById("content");
+
+        function addSign(x) {
+            return `${x < 0 ? '' : '+'}${x}`;
+        }
         function updateClock() {
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay();
             const cur = Math.floor((seconds - base) / 60);
@@ -96,6 +105,11 @@
                 offset < kc[1] ? "rgb(255,192,0)" :
                 offset < kc[2] ? "rgb(0,112,192)" :
                                  "rgb(112,48,160)";
+            biasElement.innerText = 
+                offset < kc[0] ? addSign(offset - bias) : 
+                offset < kc[1] ? addSign(offset - kc[0] - bias) : 
+                offset < kc[2] ? addSign(offset - kc[1] - bias) : 
+                                 addSign(offset - kc[2] - bias);
         }
 
     </script>
