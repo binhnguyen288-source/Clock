@@ -1,4 +1,27 @@
 <!doctype html>
+
+<style>
+    html {
+        margin: 0px 0px 0px 0px;
+        width: 100%;
+        height: 100%;
+    }
+    body {
+        font-family: Calibri;
+        width: 100%;
+        height: 100%;
+    }
+    #content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        color: white;
+    }
+</style>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -9,33 +32,40 @@
   </head>
   <body>
     <style>
-        body {
-            font-family: Calibri;
-        }
-        #content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: auto;
-            width: 100vw;
-            height: 100vh;
-            background-color: black;
-            color: white;
-        }
+        
     </style>
         <div id="content">
             <div id="inputform">
-                <div class="mb-2">
-                    <label for="data" class="form-label">Nhập trường dữ liệu</label>
-                    <input type="text" class="form-control" id="data">
+                <div class="mb-4" id="inputfields">
+                    <!-- <label for="data" class="form-label">Nhập trường dữ liệu</label>
+                    <input type="text" class="form-control" id="data"> -->
                 </div>
+                <script>
+                    for (let i = 0; i < 9; ++i) {
+
+                        const input = document.createElement("input");
+                        input.type = "text";
+                        input.className = "form-control mb-2";
+                        input.id = `data${i}`;
+                        input.value = `${2 * i + 5}:00;${2 * i + 6}:00`;
+
+                        const label = document.createElement("label");
+                        label.htmlFor = input.id;
+                        label.className = "form-label mb-2";
+                        label.innerText = `Nhập khoảng cách ${2 * i + 1};${2 * i + 2}`;
+                        
+
+                        document.getElementById("inputfields").append(label, input);
+                    }
+
+                </script>
                 <button class="btn btn-secondary mb-2" style="width:100%" onclick="setClock()">Xong</button>
                 <button class="btn btn-secondary" style="width:100%" onClick="wakeLock(this)">Bật WakeLock</button>
             </div>
             <div id="clock" hidden style="display: grid; place-items: center;">
                 <span id="thungay" style="font-size: 40pt; font-weight: bold;"></span>
-                <span id="curTime" style="font-size: 80pt; font-weight: bold; line-height: 55pt;"></span>
-                <span id="bias" style="font-size: 60pt; font-weight: bold;"></span>
+                <span id="bias" style="font-size: 80pt; font-weight: bold; line-height: 60pt;"></span>
+                <span id="curTime" style="font-size: 40pt; font-weight: bold;"></span>
             </div>
         </div>
     <script src="NoSleep.min.js"></script>
@@ -52,7 +82,11 @@
         let [base, period, bias] = [0, 0, 0]
         const dayMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
 
-        const kc = [0, 0, 0, 0];
+        const kc = [
+            0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0
+        ];
 
         function getSecondsInDay() {
             const date = new Date(Date.now());
@@ -65,15 +99,14 @@
         }
 
         function setClock() {
-            const data = document.getElementById("data").value;
-            base = parseInt(data.substr(0, 2)) * 3600 + parseInt(data.substr(2, 2)) * 60;
-            for (let i = 0; i < 4; ++i)
-                kc[i] = parseFloat(data.substr(4 + 3 * i, 3));
-            for (let i = 1; i < 4; ++i)
-                kc[i] += kc[i - 1];
-
-            bias = parseFloat(data.substr(16));
-            
+            for (let i = 0; i < 9; ++i) {
+                const [red, green] = document.getElementById(`data${i}`).value.split(";").map(v => {
+                    const [hour, minute] = v.split(":").map(v => parseInt(v));
+                    return hour * 3600 + 60 * minute;
+                });
+                kc[2 * i] = red;
+                kc[2 * i + 1] = green;
+            }
             showClock();
         }
 
@@ -93,23 +126,21 @@
             return `${x < 0 ? '' : '+'}${x}`;
         }
         function updateClock() {
-            const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay();
-            const cur = Math.floor((seconds - base) / 60);
-            let offset = (kc[3] + cur % kc[3]) % kc[3];
-            if (offset < prevOffset) sound.play();
-            prevOffset = offset;
+            const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay()
             thungay.innerText = thuNgay;
             curTime.innerText = `${curHour}:${curMinute}`;
-            content.style.backgroundColor = 
-                offset < kc[0] ? "rgb(255,0,0)" :
-                offset < kc[1] ? "rgb(255,192,0)" :
-                offset < kc[2] ? "rgb(0,112,192)" :
-                                 "rgb(112,48,160)";
-            biasElement.innerText = 
-                offset < kc[0] ? addSign(offset - bias) : 
-                offset < kc[1] ? addSign(offset - kc[0] - bias) : 
-                offset < kc[2] ? addSign(offset - kc[1] - bias) : 
-                                 addSign(offset - kc[2] - bias);
+
+            let i;
+            for (i = 0; i < 18; ++i) {
+                if (seconds < kc[i]) {
+                    break;
+                }
+            }
+            const bias = (86400 + kc[i % 18] - seconds) % 86400;
+            const hour = Math.floor(bias / 3600).toString().padStart(2, '0');
+            const minute = Math.floor(bias / 60 % 60).toString().padStart(2, '0');
+            content.style.backgroundColor = i % 2 ? "rgb(255, 0, 0)" : "rgb(0, 172, 0)";
+            biasElement.innerText = `${hour}:${minute}`;
         }
 
     </script>
