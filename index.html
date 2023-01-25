@@ -45,13 +45,13 @@
 
                         const input = document.createElement("input");
                         input.type = "text";
-                        input.className = "form-control mb-2";
+                        input.className = "form-control mb-2 d-none";
                         input.id = `data${i}`;
-                        input.value = `${2 * i + 5}:00;${2 * i + 6}:00`;
+                        input.value = `${2 * i + 5}:40;${2 * i + 6}:40`;
 
                         const label = document.createElement("label");
                         label.htmlFor = input.id;
-                        label.className = "form-label mb-2";
+                        label.className = "form-label mb-2 d-none";
                         label.innerText = `Nhập khoảng cách ${2 * i + 1};${2 * i + 2}`;
                         
 
