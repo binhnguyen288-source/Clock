@@ -56,7 +56,6 @@
         const thungay = document.getElementById("thungay"); // top
         const curTime = document.getElementById("curTime"); // bottom
         const biasElement = document.getElementById("bias"); // middle 
-        const content = document.getElementById("content"); // background
 
 
 
@@ -96,13 +95,13 @@
             curTime.innerText = `${curHour}:${curMinute}`;
 
             if (seconds < baseTime || seconds >= endTime) {
-                content.style.backgroundColor = "rgb(0, 172, 0)";
+                biasElement.style.color = "rgb(0, 172, 0)";
                 biasElement.innerText = `SL`;
             }
             else {
                 const i = Math.floor((seconds - baseTime) / getSecondsHourMinute(0, 25));
                 const timeLeft = (i + 1) * getSecondsHourMinute(0, 25) - (seconds - baseTime);
-                content.style.backgroundColor = i % 2 === 0 ? "rgb(255, 0, 0)" : "rgb(0, 172, 0)";
+                biasElement.style.color = i % 2 === 0 ? "rgb(255, 0, 0)" : "rgb(0, 172, 0)";
                 biasElement.innerText = Math.ceil(timeLeft / 60).toString().padStart(2, '0');
             }
             
