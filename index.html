@@ -52,7 +52,7 @@
             noSleep.enable();
             ev.setAttribute('hidden', '');
         }
-        
+
         const thungay = document.getElementById("thungay"); // top
         const curTime = document.getElementById("curTime"); // bottom
         const biasElement = document.getElementById("bias"); // middle 
@@ -103,7 +103,7 @@
                 const i = Math.floor((seconds - baseTime) / getSecondsHourMinute(0, 25));
                 const timeLeft = (i + 1) * getSecondsHourMinute(0, 25) - (seconds - baseTime);
                 content.style.backgroundColor = i % 2 ? "rgb(255, 0, 0)" : "rgb(0, 172, 0)";
-                biasElement.innerText = `0:${Math.ceil(timeLeft / 60)}`;
+                biasElement.innerText = `0:${Math.ceil(timeLeft / 60).toString().padStart(2, '0')}`;
             }
             
             
