@@ -64,7 +64,7 @@
             </div>
             <div id="clock" hidden style="display: grid; place-items: center;">
                 <span id="thungay" style="font-size: 40pt; font-weight: bold;"></span>
-                <span id="bias" style="font-size: 80pt; font-weight: bold; line-height: 60pt;"></span>
+                <span id="bias" style="font-size: 120pt; font-weight: bold; line-height: 120pt;"></span>
                 <span id="curTime" style="font-size: 40pt; font-weight: bold;"></span>
             </div>
         </div>
@@ -125,22 +125,30 @@
         function addSign(x) {
             return `${x < 0 ? '' : '+'}${x}`;
         }
+
+        function getSecondsHourMinute(hour, minute) {
+            return hour * 3600 + minute * 60;
+        }
+
+        const baseTime = getSecondsHourMinute(6, 25);
+        const endTime = getSecondsHourMinute(22, 40); 
         function updateClock() {
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay()
             thungay.innerText = thuNgay;
             curTime.innerText = `${curHour}:${curMinute}`;
 
-            let i;
-            for (i = 0; i < 18; ++i) {
-                if (seconds < kc[i]) {
-                    break;
-                }
+            if (seconds < baseTime || seconds >= endTime) {
+                content.style.backgroundColor = "rgb(0, 172, 0)";
+                biasElement.innerText = `SL`;
             }
-            const bias = (86400 + kc[i % 18] - seconds) % 86400;
-            const hour = Math.floor(bias / 3600).toString().padStart(2, '0');
-            const minute = Math.floor(bias / 60 % 60).toString().padStart(2, '0');
-            content.style.backgroundColor = i % 2 ? "rgb(255, 0, 0)" : "rgb(0, 172, 0)";
-            biasElement.innerText = `${hour}:${minute}`;
+            else {
+                const i = Math.floor((seconds - baseTime) / getSecondsHourMinute(0, 25));
+                const timeLeft = (i + 1) * getSecondsHourMinute(0, 25) - (seconds - baseTime);
+                content.style.backgroundColor = i % 2 ? "rgb(255, 0, 0)" : "rgb(0, 172, 0)";
+                biasElement.innerText = `0:${Math.ceil(timeLeft / 60)}`;
+            }
+            
+            
         }
 
     </script>
