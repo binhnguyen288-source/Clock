@@ -37,12 +37,13 @@
         <div id="content">
             <div id="inputform">
                 <button class="btn btn-secondary mb-2" style="width:100%" onclick="setClock()">Xong</button>
-                <button class="btn btn-secondary" style="width:100%" onClick="wakeLock(this)">Bật WakeLock</button>
+                <button class="btn btn-secondary mb-2" style="width:100%" onClick="wakeLock(this)">Bật WakeLock</button>
+                <button class="btn btn-secondary mb-2" style="width:100%" onClick="hideButtons(this)">On/off</button>
             </div>
             <div id="clock" hidden style="display: grid; place-items: center;">
-                <span id="thungay" style="font-size: 40pt; font-weight: bold;"></span>
+                <span id="thungay" style="font-size: 60pt; font-weight: bold;"></span>
                 <span id="bias" style="font-size: 120pt; font-weight: bold; line-height: 120pt;"></span>
-                <span id="curTime" style="font-size: 40pt; font-weight: bold;"></span>
+                <span id="curTime" style="font-size: 60pt; font-weight: bold;"></span>
             </div>
         </div>
     <script src="NoSleep.min.js"></script>
@@ -52,10 +53,17 @@
             noSleep.enable();
             ev.setAttribute('hidden', '');
         }
+        
 
         const thungay = document.getElementById("thungay"); // top
         const curTime = document.getElementById("curTime"); // bottom
-        const biasElement = document.getElementById("bias"); // middle 
+        const biasElement = document.getElementById("bias"); // middle
+
+        function hideButtons(ev) {
+            thungay.setAttribute('hidden', '');
+            curTime.setAttribute('hidden', '');
+            ev.setAttribute('hidden', '');
+        }
 
 
 
@@ -88,7 +96,11 @@
         }
 
         const baseTime = getSecondsHourMinute(6, 25);
-        const endTime = getSecondsHourMinute(22, 40); 
+        const endTime = getSecondsHourMinute(22, 40);
+        const prefix_table = ['Z', 'A1', 'A1', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4',
+                       'A5', 'A5', 'X1', 'X1', 'X2', 'X2', 'B1', 'B1', 'B2', 'B2',
+                       'B3', 'B3', 'B4', 'B4', 'B5', 'B5', 'Y1', 'Y1', 'Y2', 'Y2',
+                       'C1', 'C1', 'C2', 'C2', 'C3', 'C3', 'C4', 'C4', 'C5', 'C5']
         function updateClock() {
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay()
             thungay.innerText = thuNgay;
@@ -96,13 +108,13 @@
 
             if (seconds < baseTime || seconds >= endTime) {
                 biasElement.style.color = "rgb(0, 172, 0)";
-                biasElement.innerText = `SL`;
+                biasElement.innerText = `Z-SL`;
             }
             else {
                 const i = Math.floor((seconds - baseTime) / getSecondsHourMinute(0, 25));
                 const timeLeft = (i + 1) * getSecondsHourMinute(0, 25) - (seconds - baseTime);
                 biasElement.style.color = i % 2 === 0 ? "rgb(255, 0, 0)" : "rgb(0, 172, 0)";
-                biasElement.innerText = Math.ceil(timeLeft / 60).toString().padStart(2, '0');
+                biasElement.innerText = `${prefix_table[i]}-${Math.ceil(timeLeft / 60).toString().padStart(2, '0')}`;
             }
             
             
