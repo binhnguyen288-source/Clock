@@ -36,6 +36,7 @@
     </style>
         <div id="content">
             <div id="inputform">
+                <input type="text" id="option" class="form-control mb-2" placeholder="Nhập thông tin">
                 <button class="btn btn-secondary mb-2" style="width:100%" onclick="setClock()">Xong</button>
                 <button class="btn btn-secondary mb-2" style="width:100%" onClick="wakeLock(this)">Bật WakeLock</button>
                 <button class="btn btn-secondary mb-2" style="width:100%" onClick="hideButtons(this)">On/off</button>
@@ -78,8 +79,19 @@
                 seconds: date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds()
             }
         }
-
+        let kcab = 0;
+        let kcbc = 0;
+        let kcca = 0;
+        let baseTime = 0;
+        let period = 0;
         function setClock() {
+            const infoDoc = document.getElementById("option");
+            const str = infoDoc.value;
+            baseTime = parseInt(str.slice(0, 2)) * 3600 + parseInt(str.slice(2, 4)) * 60;
+            kcab = parseFloat(str.slice(4, 6)) * 60;
+            kcbc = parseFloat(str.slice(6, 8)) * 60;
+            kcca = parseFloat(str.slice(8)) * 60;
+            period = kcab + kcbc + kcca;
             showClock();
         }
 
@@ -94,26 +106,54 @@
         function getSecondsHourMinute(hour, minute) {
             return hour * 3600 + minute * 60;
         }
-
-        const baseTime = getSecondsHourMinute(6, 25);
         const endTime = getSecondsHourMinute(22, 40);
-        const prefix_table = ['Z', 'A1', 'A1', 'A2', 'A2', 'A3', 'A3', 'A4', 'A4',
-                       'A5', 'A5', 'X1', 'X1', 'X2', 'X2', 'B1', 'B1', 'B2', 'B2',
-                       'B3', 'B3', 'B4', 'B4', 'B5', 'B5', 'Y1', 'Y1', 'Y2', 'Y2',
-                       'C1', 'C1', 'C2', 'C2', 'C3', 'C3', 'C4', 'C4', 'C5', 'C5']
+        const prefix_table = [
+            'R', 'S1', 'S2',
+            'RF', 'M1', 'M2',
+            'RM', 'M3', 'M4',
+            'RL', 'S1', 'S2',
+            'RF', 'M1', 'M2',
+            'RM', 'M3', 'M4',
+            'RL', 'S1', 'S2',
+            'RF', 'M1', 'M2',
+            'RM', 'M3', 'M4',
+            'RL', 'D'
+        ];
+
+        const greenColor = "rgb(52, 168, 83)";
+        const yellowColor = "rgb(251, 188, 5)";
+
         function updateClock() {
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay()
             thungay.innerText = thuNgay;
             curTime.innerText = `${curHour}:${curMinute}`;
 
+            const endTime = baseTime + 9 * period + kcab;
+            
+
             if (seconds < baseTime || seconds >= endTime) {
-                biasElement.style.color = "rgb(52, 168, 83)";
-                biasElement.innerText = `Z-SL`;
+                biasElement.style.color = yellowColor;
+                biasElement.innerText = `D`;
             }
             else {
-                const i = Math.floor((seconds - baseTime) / getSecondsHourMinute(0, 25));
-                const timeLeft = (i + 1) * getSecondsHourMinute(0, 25) - (seconds - baseTime);
-                biasElement.style.color = i % 2 === 0 ? "rgb(251, 188, 5)" : "rgb(52, 168, 83)";
+                const nperiod = Math.floor((seconds - baseTime) / period);
+                const left = seconds - baseTime - nperiod * period;
+                let timeLeft;
+                let i;
+                if (left < kcab) {
+                    timeLeft = kcab - left;
+                    i = 3 * nperiod;
+                }
+                else if (left < kcab + kcbc) {
+                    timeLeft = kcab + kcbc - left;
+                    i = 3 * nperiod + 1;
+                }
+                else {
+                    timeLeft = kcab + kcbc + kcca - left;
+                    i = 3 * nperiod + 2;
+                }
+
+                biasElement.style.color = i % 3 === 0 ? greenColor : yellowColor;
                 biasElement.innerText = `${prefix_table[i]}-${Math.ceil(timeLeft / 60).toString().padStart(2, '0')}`;
             }
             
