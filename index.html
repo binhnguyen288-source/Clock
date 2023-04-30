@@ -43,7 +43,7 @@
             </div>
             <div id="clock" hidden style="display: grid; place-items: center;">
                 <span id="thungay" style="font-size: 45pt; font-weight: bold;"></span>
-                <span id="bias" style="font-size: 90pt; font-weight: bold; line-height: 90pt;"></span>
+                <span id="bias" style="font-size: 76pt; font-weight: bold; line-height: 76pt;"></span>
                 <span id="curTime" style="font-size: 45pt; font-weight: bold;"></span>
             </div>
         </div>
@@ -108,16 +108,16 @@
         }
         const endTime = getSecondsHourMinute(22, 40);
         const prefix_table = [
-            'R', 'S1', 'S2',
-            'RF', 'M1', 'M2',
-            'RM', 'M3', 'M4',
-            'RL', 'S1', 'S2',
-            'RF', 'M1', 'M2',
-            'RM', 'M3', 'M4',
-            'RL', 'S1', 'S2',
-            'RF', 'M1', 'M2',
-            'RM', 'M3', 'M4',
-            'RL', 'D'
+            'TS1', 'S1', 'S2',
+            'TM1', 'M1', 'M2',
+            'TM3', 'M3', 'M4',
+            'TS1', 'S1', 'S2',
+            'TM1', 'M1', 'M2',
+            'TM3', 'M3', 'M4',
+            'TS1', 'S1', 'S2',
+            'TM1', 'M1', 'M2',
+            'TM3', 'M3', 'M4',
+            'TD', 'D'
         ];
 
         const greenColor = "rgb(52, 168, 83)";
@@ -133,7 +133,7 @@
 
             if (seconds < baseTime || seconds >= endTime) {
                 biasElement.style.color = yellowColor;
-                biasElement.innerText = `D`;
+                biasElement.innerText = `D-${Math.ceil((86400 + baseTime - seconds) / 60)}`;
             }
             else {
                 const nperiod = Math.floor((seconds - baseTime) / period);
