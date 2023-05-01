@@ -43,7 +43,7 @@
             </div>
             <div id="clock" hidden style="display: grid; place-items: center;">
                 <span id="thungay" style="font-size: 45pt; font-weight: bold;"></span>
-                <span id="bias" style="font-size: 76pt; font-weight: bold; line-height: 76pt;"></span>
+                <span id="bias" style="font-size: 80pt; font-weight: bold; line-height: 80pt;"></span>
                 <span id="curTime" style="font-size: 45pt; font-weight: bold;"></span>
             </div>
         </div>
@@ -134,7 +134,7 @@
 
             if (seconds < baseTime || seconds >= endTime) {
                 biasElement.style.color = grayColor;
-                biasElement.innerText = `T${Math.ceil((86400 + baseTime - seconds) / 60)}`;
+                biasElement.innerText = `T-${Math.ceil((86400 + baseTime - seconds) / 60)}`;
             }
             else {
                 const nperiod = Math.floor((seconds - baseTime) / period);
