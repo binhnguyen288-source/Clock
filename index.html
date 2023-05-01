@@ -79,19 +79,18 @@
                 seconds: date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds()
             }
         }
-        let kcab = 0;
-        let kcbc = 0;
-        let kcca = 0;
+        let xuan, ha, thudong, thu;
         let baseTime = 0;
         let period = 0;
         function setClock() {
             const infoDoc = document.getElementById("option");
             const str = infoDoc.value;
             baseTime = parseInt(str.slice(0, 2)) * 3600 + parseInt(str.slice(2, 4)) * 60;
-            kcab = parseFloat(str.slice(4, 6)) * 60;
-            kcbc = parseFloat(str.slice(6, 8)) * 60;
-            kcca = parseFloat(str.slice(8)) * 60;
-            period = kcab + kcbc + kcca;
+            xuan = parseFloat(str.slice(4, 6)) * 60;
+            ha = parseFloat(str.slice(6, 8)) * 60;
+            thudong = parseFloat(str.slice(8, 10)) * 60;
+            thu = parseFloat(str.slice(10)) * 60;
+            period = xuan + ha + thudong;
             showClock();
         }
 
@@ -106,54 +105,66 @@
         function getSecondsHourMinute(hour, minute) {
             return hour * 3600 + minute * 60;
         }
-        const endTime = getSecondsHourMinute(22, 40);
+
         const prefix_table = [
-            'TS1', 'S1', 'S2',
-            'TM1', 'M1', 'M2',
-            'TM3', 'M3', 'M4',
-            'TS1', 'S1', 'S2',
-            'TM1', 'M1', 'M2',
-            'TM3', 'M3', 'M4',
-            'TS1', 'S1', 'S2',
-            'TM1', 'M1', 'M2',
-            'TM3', 'M3', 'M4',
-            'TD', 'D'
+            'X', 'H', 'T',
+            'X', 'H', 'T',
+            'X', 'H', 'T',
+            'X', 'H', 'T',
+            'X', 'H', 'T',
+            'X', 'H', 'T',
+            'X', 'H', 'T',
+            'X', 'H', 'T',
+            'X', 'H', 'T',
+            'X', 'T'
         ];
 
-        const greenColor = "rgb(52, 168, 83)";
-        const yellowColor = "rgb(251, 188, 5)";
+        const greenColor = "rgb(52, 162, 63)";
+        const redColor = "rgb(242, 0, 22)"
+        const yellowColor = "rgb(255, 194, 17)";
+        const grayColor = "rgb(153, 153, 153)";
 
         function updateClock() {
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay()
             thungay.innerText = thuNgay;
             curTime.innerText = `${curHour}:${curMinute}`;
 
-            const endTime = baseTime + 9 * period + kcab;
+            const endTime = baseTime + 9 * period + xuan;
             
 
             if (seconds < baseTime || seconds >= endTime) {
-                biasElement.style.color = yellowColor;
-                biasElement.innerText = `D-${Math.ceil((86400 + baseTime - seconds) / 60)}`;
+                biasElement.style.color = grayColor;
+                biasElement.innerText = `T${Math.ceil((86400 + baseTime - seconds) / 60)}`;
             }
             else {
                 const nperiod = Math.floor((seconds - baseTime) / period);
                 const left = seconds - baseTime - nperiod * period;
+                
+                let color;
                 let timeLeft;
                 let i;
-                if (left < kcab) {
-                    timeLeft = kcab - left;
+                if (left < xuan) {
+                    timeLeft = xuan - left;
+                    color = greenColor;
                     i = 3 * nperiod;
                 }
-                else if (left < kcab + kcbc) {
-                    timeLeft = kcab + kcbc - left;
+                else if (left < xuan + ha) {
+                    timeLeft = xuan + ha - left;
+                    color = redColor;
                     i = 3 * nperiod + 1;
                 }
+                else if (left < xuan + ha + thu){
+                    timeLeft = xuan + ha + thudong - left;
+                    color = yellowColor;
+                    i = 3 * nperiod + 2;
+                }
                 else {
-                    timeLeft = kcab + kcbc + kcca - left;
+                    timeLeft = xuan + ha + thudong - left;
+                    color = grayColor;
                     i = 3 * nperiod + 2;
                 }
 
-                biasElement.style.color = i % 3 === 0 ? greenColor : yellowColor;
+                biasElement.style.color = color;
                 biasElement.innerText = `${prefix_table[i]}-${Math.ceil(timeLeft / 60).toString().padStart(2, '0')}`;
             }
             
