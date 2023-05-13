@@ -103,7 +103,7 @@
             const baseTime = 86400 - getSecondsHourMinute(4, 14);
             const offset = (baseTime + seconds) % 86400;
             let val = Math.floor(offset / (11 * 6)) - 100;
-            const mod = val - 100 * Math.floor(val / 100);
+            const mod = Math.abs(val % 100);
             
             biasElement.innerText = `${Math.trunc(val / 100).toString().replace('-0', '0').padStart(2, '0')}:${mod.toString().padStart(2, '0')}`;
         }
