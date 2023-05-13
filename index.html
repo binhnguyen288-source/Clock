@@ -104,8 +104,8 @@
             const offset = (baseTime + seconds) % 86400;
             let val = Math.floor(offset / (11 * 6)) - 100;
             const mod = val - 100 * Math.floor(val / 100);
-            val = val < 0 ? Math.ceil(val / 100) : Math.floor(val / 100);
-            biasElement.innerText = `${(val).toString().padStart(2, '0')}:${mod.toString().padStart(2, '0')}`;
+            
+            biasElement.innerText = `${Math.trunc(val / 100).toString().padStart(2, '0')}:${mod.toString().padStart(2, '0')}`;
         }
 
     </script>
