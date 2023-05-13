@@ -103,8 +103,6 @@
             const baseTime = 86400 - getSecondsHourMinute(4, 14);
             const offset = (baseTime + seconds) % 86400;
             const val = Math.floor(offset / (11 * 6));
-
-            biasElement.style.color = "rgb(255, 255, 255)";
             biasElement.innerText = `${Math.floor(val / 100 - 1).toString().padStart(2, '0')}:${(val % 100).toString().padStart(2, '0')}`;
         }
 
