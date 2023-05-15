@@ -100,9 +100,9 @@
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay()
             thungay.innerText = thuNgay;
             curTime.innerText = `${curHour}:${curMinute}`;
-            const baseTime = 86400 - getSecondsHourMinute(4, 14);
+            const baseTime = 86400 - getSecondsHourMinute(5, 35);
             const offset = (baseTime + seconds) % 86400;
-            let val = Math.floor(offset / (11 * 6)) - 100;
+            let val = Math.floor(offset / 69) - 100;
             const mod = Math.abs(val % 100);
             
             biasElement.innerText = `${(val / 100).toFixed(2).toString().replace('.', ':').replace('-0:00', '0:00')}`;
