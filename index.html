@@ -60,14 +60,6 @@
         const curTime = document.getElementById("curTime"); // bottom
         const biasElement = document.getElementById("bias"); // middle
 
-        // function hideButtons(ev) {
-        //     thungay.setAttribute('hidden', '');
-        //     curTime.setAttribute('hidden', '');
-        //     ev.setAttribute('hidden', '');
-        // }
-
-
-
         function getSecondsInDay() {
             
             const dayMap = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
@@ -96,51 +88,15 @@
         }
 
 
-        const intervals = [
-            getSecondsHourMinute(6, 15),
-            getSecondsHourMinute(7, 30),
-            getSecondsHourMinute(9, 30),
-            getSecondsHourMinute(11, 30),
-            getSecondsHourMinute(13, 30),
-            getSecondsHourMinute(15, 15),
-            getSecondsHourMinute(17, 0),
-            getSecondsHourMinute(18, 45),
-            getSecondsHourMinute(20, 45),
-            getSecondsHourMinute(22, 30),
-            getSecondsHourMinute(23, 30)
-        ];
-        const labels = [
-            "STA",
-            "SA1",
-            "SA2",
-            "TRU",
-            "CH1",
-            "CH2",
-            "XEE",
-            "TO1",
-            "TO2",
-            "END",
-            "SLP"
-        ];
+        const baseTime = getSecondsHourMinute(6, 0);
+        const scaleTime = 60 * 22 + 30;
         function updateClock() {
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay()
             thungay.innerText = thuNgay;
             curTime.innerText = `${curHour}:${curMinute}`;
 
-            if (seconds <= intervals[0] || seconds >= intervals[intervals.length - 1]) {
-                biasElement.innerText = labels[labels.length - 1];
-                return;
-            }
 
-            let i = 0;
-            for (i = 0; i < intervals.length; ++i) {
-                if (intervals[i] >= seconds) {
-                    break;
-                }
-            }
-            const num = (Math.ceil(10 * (intervals[i] - seconds) / 450) / 10).toFixed(1);
-
-            biasElement.innerText = `${labels[i - 1]}:${num}`;
+            biasElement.innerText = ((seconds - baseTime) / scaleTime).toFixed(2);
         }
 
     </script>
