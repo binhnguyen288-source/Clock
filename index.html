@@ -94,8 +94,7 @@
             const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay();
             thungay.innerText = thuNgay;
             curTime.innerText = `${curHour}:${curMinute}`;
-			const offset_time = (seconds - baseTime);
-			const frac_time = offset_time - scaleTime * Math.floor(offset_time / scaleTime);
+	    const frac_time = (seconds - baseTime) % scaleTime;
             biasElement.innerText = Math.floor(frac_time * 100 / scaleTime);
         }
 
