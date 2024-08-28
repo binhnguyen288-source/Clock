@@ -91,12 +91,12 @@
         const baseTime = getSecondsHourMinute(7, 0);
         const scaleTime = 60 * 85;
         function updateClock() {
-            const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay()
+            const { thuNgay, curHour, curMinute, seconds } = getSecondsInDay();
             thungay.innerText = thuNgay;
             curTime.innerText = `${curHour}:${curMinute}`;
-
-
-            biasElement.innerText = ((seconds - baseTime) / scaleTime).toFixed(2);
+			const offset_time = (seconds - baseTime);
+			const frac_time = offset_time - scaleTime * Math.floor(offset_time / scaleTime);
+            biasElement.innerText = Math.floor(frac_time * 100 / scaleTime);
         }
 
     </script>
